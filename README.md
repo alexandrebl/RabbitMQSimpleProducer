@@ -1,0 +1,2 @@
+# RabbitMQSimplePublisher
+RabbitMQ Simple Publisher
