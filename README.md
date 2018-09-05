@@ -1,2 +1,2 @@
-# RabbitMQSimplePublisher
-RabbitMQ Simple Publisher
+# RabbitMQSimpleProducer
+RabbitMQ Simple Producer
