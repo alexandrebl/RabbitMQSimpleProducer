@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQSimplePublisher.Entity;
 
-namespace RabbitMQSimplePublisher.Library {
+namespace RabbitMQSimpleProducer.Library {
     /// <summary>
     /// Responsável por criar conexões com RabbitMQ
     /// </summary>
@@ -31,6 +28,7 @@ namespace RabbitMQSimplePublisher.Library {
                 UserName = connectionConfig.UserName,
                 Password = connectionConfig.Password,
                 AutomaticRecoveryEnabled = true
+                
             };
 
             if (_connection == null) {
