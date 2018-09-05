@@ -1,2 +1,4 @@
 # RabbitMQSimpleProducer
-RabbitMQ Simple Producer
+
+## How to use
+Install-Package RabbitMQSimpleProducer -Version 1.0.0
