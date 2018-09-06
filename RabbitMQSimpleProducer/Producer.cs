@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using RabbitMQSimpleProducer.Library;
-using RabbitMQSimplePublisher.Entity;
+using RabbitMQSimpleConnectionFactory.Entity;
+using RabbitMQSimpleConnectionFactory.Library;
 
 namespace RabbitMQSimpleProducer {
     public class Producer {
