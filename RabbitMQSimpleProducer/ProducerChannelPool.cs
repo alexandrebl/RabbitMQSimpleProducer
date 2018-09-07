@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQSimpleConnectionFactory.Entity;
 using RabbitMQSimpleConnectionFactory.Library;
+using System.Text;
 
 namespace RabbitMQSimpleProducer {
-    public class ProducerChannelPool
-    {
+    public class ProducerChannelPool : IProducerChannelPool {
 
         private readonly ConnectionPool _connectionPool;
-        public ProducerChannelPool(int poolSize, ConnectionSetting connectionSetting)
-        {
+        public ProducerChannelPool(int poolSize, ConnectionSetting connectionSetting) {
             _connectionPool = new ConnectionPool(poolSize, connectionSetting);
         }
 
