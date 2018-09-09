@@ -7,9 +7,9 @@ using RabbitMQSimpleConnectionFactory.Library;
 namespace RabbitMQSimpleProducer {
     public class Producer : IProducer {
         private readonly IModel _channel;
-
+        private readonly ChannelFactory _channelFactory = new ChannelFactory();
         public Producer(ConnectionSetting connectionSetting) {
-            _channel = ChannelFactory.Create(connectionSetting);
+            _channel = _channelFactory.Create(connectionSetting);
         }
 
         public Producer(IModel channel) {
