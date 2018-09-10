@@ -7,13 +7,16 @@ using RabbitMQSimpleConnectionFactory.Library;
 namespace RabbitMQSimpleProducer {
     public class Producer : IProducer {
         private readonly IModel _channel;
-
         public Producer(ConnectionSetting connectionSetting) {
             _channel = ChannelFactory.Create(connectionSetting);
         }
 
         public Producer(IModel channel) {
             _channel = channel;
+        }
+
+        public Producer(IConnection connection) {
+            _channel = connection.CreateModel();
         }
 
         /// <summary>
