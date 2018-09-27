@@ -11,7 +11,7 @@ namespace ConsoleApp10 {
     class Program {
         static void Main(string[] args) {
 
-            var producar = new RabbitMQSimpleProducer.Producer(
+            var producer = new RabbitMQSimpleProducer.Producer(
                 new ConnectionSetting {
                     HostName = "xxxxx",
                     Password = "xxxxx",
@@ -22,7 +22,7 @@ namespace ConsoleApp10 {
             );
             Console.WriteLine($"{DateTime.UtcNow:o}");
             for (var index = 0; index < 1000; index++)
-                producar.Publish($"{DateTime.UtcNow:o} - Hi!", "xxxxx", "xxxxx");
+                producer.Publish($"{DateTime.UtcNow:o} - Hi!", "xxxxx", "xxxxx");
 
             Console.WriteLine("end");
             Console.WriteLine($"{DateTime.UtcNow:o}");
