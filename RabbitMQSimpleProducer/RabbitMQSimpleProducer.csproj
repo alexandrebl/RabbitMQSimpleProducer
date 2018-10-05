@@ -5,6 +5,7 @@
     <Authors>Alexandre Brandão Lustosa</Authors>
     <RepositoryUrl>https://github.com/alexandrebl/RabbitMQSimpleProducer</RepositoryUrl>
     <Version>1.0.10</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
