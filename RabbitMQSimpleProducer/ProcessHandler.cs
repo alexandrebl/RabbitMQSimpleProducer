@@ -12,7 +12,7 @@ namespace RabbitMQSimpleProducer
             }
             catch (Exception ex)
             {
-                while (numberOfTries > 0)
+                if (numberOfTries > 0)
                 {
                     --numberOfTries;
                     Retry(method, ref numberOfTries);
