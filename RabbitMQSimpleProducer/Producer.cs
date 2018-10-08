@@ -42,6 +42,7 @@ namespace RabbitMQSimpleProducer
                 _channel = ChannelFactory.Create(_connectionSetting);
 
                 _channel.BasicPublish(exchange: exchange ?? "", routingKey: routingKey, basicProperties: basicProperties, body: buffer);
+                numberOfTries = 0;
             }, ref numberOfTries);
         }
     }
