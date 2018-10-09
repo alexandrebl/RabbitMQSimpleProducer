@@ -17,6 +17,10 @@ namespace RabbitMQSimpleProducer
                     --numberOfTries;
                     Retry(method, ref numberOfTries);
                 }
+                else
+                {
+                    throw new Exception($"All retries failed: {ex.Message}", ex);
+                }
             }
         }
     }
