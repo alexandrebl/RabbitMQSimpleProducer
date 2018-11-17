@@ -19,7 +19,7 @@ namespace RabbitMQSimpleProducer
                 }
                 else
                 {
-                    throw new Exception($"All retries failed: {ex.Message}", ex);
+                    throw new Exception($"All retries failed:{ex.Message}", ex);
                 }
             }
         }
