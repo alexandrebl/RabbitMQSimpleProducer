@@ -19,16 +19,6 @@ namespace RabbitMQSimpleProducer
             _channel = ChannelFactory.Create(_connectionSetting);
         }
 
-        public Producer(IModel channel)
-        {
-            _channel = channel;
-        }
-
-        public Producer(IConnection connection)
-        {
-            _channel = connection.CreateModel();
-        }
-
         /// <summary>
         /// Publica a mensagem na fila
         /// </summary>
@@ -37,9 +27,17 @@ namespace RabbitMQSimpleProducer
         {
             var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
 
-            basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+            ProcessHandler.Retry(() =>
+            {
+                if (_channel == null || _channel.IsClosed)
+                    _channel = ChannelFactory.Create(_connectionSetting);
 
-            _channel.BasicPublish(exchange: exchange ?? "", routingKey: routingKey, basicProperties: basicProperties, body: buffer);
+                basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+
+                _channel.BasicPublish(exchange: exchange ?? "", routingKey: routingKey, basicProperties: basicProperties, body: buffer);
+
+                numberOfTries = 0;
+            }, ref numberOfTries);
         }
 
         public void BatchPublish<T>(IEnumerable<T> data, string exchange = null, string routingKey = null, bool mandatory = false, IBasicProperties basicProperties = null, short numberOfTries = 0)
