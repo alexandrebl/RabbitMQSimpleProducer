@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Framing;
 using RabbitMQSimpleConnectionFactory.Entity;
 using RabbitMQSimpleConnectionFactory.Library;
 
@@ -33,17 +35,58 @@ namespace RabbitMQSimpleProducer
         /// <param name="obj"></param>
         public void Publish<T>(T obj, string exchange = null, string routingKey = null, IBasicProperties basicProperties = null, short numberOfTries = 0)
         {
-            var data = JsonConvert.SerializeObject(obj);
-            var buffer = Encoding.UTF8.GetBytes(data);
+            var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
 
-            ProcessHandler.Retry(() =>
+            basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+
+            _channel.BasicPublish(exchange: exchange ?? "", routingKey: routingKey, basicProperties: basicProperties, body: buffer);
+        }
+
+        public void BatchPublish<T>(IEnumerable<T> data, string exchange = null, string routingKey = null, bool mandatory = false, IBasicProperties basicProperties = null, short numberOfTries = 0)
+        {
+            var publisher = _channel.CreateBasicPublishBatch();
+
+            foreach (var item in data)
             {
-                if (_channel == null || _channel.IsClosed)
-                _channel = ChannelFactory.Create(_connectionSetting);
+                var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(item));
 
-                _channel.BasicPublish(exchange: exchange ?? "", routingKey: routingKey, basicProperties: basicProperties, body: buffer);
-                numberOfTries = 0;
-            }, ref numberOfTries);
+                basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+
+                publisher.Add(exchange, routingKey, mandatory, basicProperties, buffer);
+            }
+
+            publisher.Publish();
+        }
+
+        public void BatchPublish(IEnumerable<byte[]> data, string exchange = null, string routingKey = null, bool mandatory = false, IBasicProperties basicProperties = null, short numberOfTries = 0)
+        {
+            var publisher = _channel.CreateBasicPublishBatch();
+
+            foreach (var item in data)
+            {
+                basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+
+                publisher.Add(exchange, routingKey, mandatory, basicProperties, item);
+            }
+
+            publisher.Publish();
+        }
+
+        public void BatchPublish<T>(List<MessageSet<T>> messageBatch, short numberOfTries = 0)
+        {
+            var publisher = _channel.CreateBasicPublishBatch();
+
+            foreach (var message in messageBatch)
+            {
+                var body = Encoding.UTF8.GetBytes(message.ToString());
+
+                message.BasicProperties = message.BasicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
+
+                publisher.Add(message.Exchange, message.RoutingKey, message.Mandatory, message.BasicProperties, body);
+            }
+
+            publisher.Publish();
         }
     }
 }
+
