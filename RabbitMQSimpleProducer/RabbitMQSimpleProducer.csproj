@@ -4,14 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Alexandre Brandão Lustosa</Authors>
     <RepositoryUrl>https://github.com/alexandrebl/RabbitMQSimpleProducer</RepositoryUrl>
-    <Version>1.0.14</Version>
+    <Version>1.0.20</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
-    <PackageReference Include="RabbitMQSimpleConnectionFactory" Version="1.0.9" />
+    <PackageReference Include="RabbitMQSimpleConnectionFactory" Version="2.0.0" />
   </ItemGroup>
 
 </Project>
