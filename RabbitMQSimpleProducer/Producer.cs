@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -12,11 +13,19 @@ namespace RabbitMQSimpleProducer
     {
         private IModel _channel;
         private readonly ConnectionSetting _connectionSetting;
+        private readonly ChannelFactory _channelFactory;
 
         public Producer(ConnectionSetting connectionSetting)
         {
             _connectionSetting = connectionSetting;
-            _channel = ChannelFactory.Create(_connectionSetting, automaticRecoveryEnabled: true, requestedHeartbeat: 60);
+            _channelFactory = new ChannelFactory(connectionSetting);
+            this.EnsureConnected();
+        }
+
+        public Producer(ChannelFactory channelFactory)
+        {
+            _channelFactory = channelFactory ?? throw new ArgumentNullException(nameof(channelFactory));
+            this.EnsureConnected();
         }
 
         /// <summary>
@@ -29,8 +38,7 @@ namespace RabbitMQSimpleProducer
 
             ProcessHandler.Retry(() =>
             {
-                if (_channel == null || _channel.IsClosed)
-                    _channel = ChannelFactory.Create(_connectionSetting, automaticRecoveryEnabled: true, requestedHeartbeat: 60);
+                this.EnsureConnected();
 
                 basicProperties = basicProperties ?? new BasicProperties { DeliveryMode = 2, Persistent = true };
 
@@ -84,6 +92,14 @@ namespace RabbitMQSimpleProducer
             }
 
             publisher.Publish();
+        }
+
+        private void EnsureConnected()
+        {
+            if (_channel == null || _channel.IsClosed)
+            {
+                _channel = _channelFactory.Create(automaticRecoveryEnabled: false, requestedHeartbeat: 60);
+            }
         }
     }
 }
