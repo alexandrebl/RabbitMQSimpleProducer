@@ -1,19 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Framing;
 using RabbitMQSimpleConnectionFactory.Entity;
 using RabbitMQSimpleConnectionFactory.Library;
-using System.Text;
 
-namespace RabbitMQSimpleProducer {
-    public class ProducerChannelPool : IProducerChannelPool {
+namespace RabbitMQSimpleProducer
+{
+    public class ProducerChannelPool : IProducerChannelPool
+    {
 
         private readonly ConnectionPool _connectionPool;
-        public ProducerChannelPool(int poolSize, ConnectionSetting connectionSetting) {
-            _connectionPool = new ConnectionPool(poolSize, connectionSetting);
+        public ProducerChannelPool(int poolSize, ConnectionSetting connectionSetting, string clientProvidedName = null)
+        {
+
+            var channelFactory = new ChannelFactory(connectionSetting, clientProvidedName);
+            _connectionPool = new ConnectionPool(poolSize, channelFactory);
         }
 
-        public void Publish<T>(T obj, string exchange = null, string routingKey = null, IBasicProperties basicProperties = null) {
+        public void Publish<T>(T obj, string exchange = null, string routingKey = null, IBasicProperties basicProperties = null)
+        {
             var data = JsonConvert.SerializeObject(obj);
             var buffer = Encoding.UTF8.GetBytes(data);
             var channel = _connectionPool.GetChannel();
